@@ -7,3 +7,9 @@ The results ends up being a random number between -1 000 000 and 1 000 000.
 When using runtime.GOMAXPROCS(1), I get the magic number to be 0. This is because the first routine runs until it's finished before the
 next routine starts. This makes so that the routines don't interrupt eachothers operations, but it makes the routines practically blocking
 because only one routine can run at a time. 
+
+
+# 4: Sharing a variable, but properly
+
+Check out foo.go. I runs two go-routines outside the main-routine which sends requests to a server which does either incrementing or decreasing to 
+completion to avoid race conditions. 
