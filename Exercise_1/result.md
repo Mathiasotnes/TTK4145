@@ -13,3 +13,8 @@ because only one routine can run at a time.
 
 Check out foo.go. I runs two go-routines outside the main-routine which sends requests to a server which does either incrementing or decreasing to 
 completion to avoid race conditions. 
+
+# 5: Bounded buffer
+
+Check out main.go. Needed to make a channel with a length of 5. Note that the consumer routine sleeps for a second at the start
+to let the buffer accumulate some values.
