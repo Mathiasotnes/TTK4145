@@ -35,21 +35,34 @@ type Resource struct {
 }
 
 
-func resourceManager(takeLow chan Resource, takeHigh chan Resource, giveBack chan Resource){
-
+func resourceManager(takeLow chan Resource, takeHigh chan Resource, giveBack chan Resource) {
     res := Resource{}
-    
+    resourceAllocated := false
+
     for {
+        if !resourceAllocated {
+            select {
+            case takeHigh <- res:
+                resourceAllocated = true
+                continue
+            default:
+            }
+            select {
+            case takeLow <- res:
+                resourceAllocated = true
+                continue
+            default:
+            }
+        }
+
         select {
-        case takeHigh<- res:
-            //fmt.Printf("[resource manager]: resource taken (high)\n")
-        case takeLow<- res:
-            //fmt.Printf("[resource manager]: resource taken (low)\n")
         case res = <-giveBack:
-            //fmt.Printf("[resource manager]: resource returned\n")
+            resourceAllocated = false
+        default:
         }
     }
 }
+
     
 
 // --- RESOURCE USERS -- //
