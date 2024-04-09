@@ -40,11 +40,28 @@ class Resource(T) {
     }
     
     T allocate(int id, int priority){
+        mtx.lock();
+        queue.insert(id, priority);
+
+        // Wait while not the first in the queue
+        while(queue.front() != id){
+            cond.wait();
+        }
+
+        mtx.unlock();
         return value;
     }
     
     void deallocate(T v){
+        mtx.lock();
         value = v;
+        if (!queue.empty()) {
+            queue.popFront();
+        }
+
+        // Notify all waiting threads as the resource state has changed.
+        cond.notifyAll();
+        mtx.unlock();
     }
 }
 
